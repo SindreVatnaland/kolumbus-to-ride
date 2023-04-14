@@ -93,7 +93,12 @@ export const HomePage = (props) => {
             onClick={(id) => setSelectedVehicle(id)}
           />
           <Hand setSelectedCard={setSelectedCard} />
-          <button disabled={!(selectedVehicle || selectedCard)}>MOVE</button>
+          <button
+            disabled={!(selectedVehicle || selectedCard)}
+            onClick={() => null}
+          >
+            MOVE
+          </button>
         </RightWrapper>
       </HorizontalWrapper>
     </Wrapper>
