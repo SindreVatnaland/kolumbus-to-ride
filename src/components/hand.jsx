@@ -1,18 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { get, post } from "../utils/api"
 
-const Hand = (prop) => {
-  const [cards, setCards] = useState([{}, {}, {}, {}, {}]);
-
-  function getHand() {
-    console.log("draw hand")
-  }
-
-  function playCard(cardId) {
-    console.log(cardId)
-
-    if (!cards.length) getHand();
-  }
 const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -23,20 +12,47 @@ const Container = styled.div`
 `
 
 const Card = styled.div`
-  width: 3rem;
+  position: relative;
+  width: 2.5rem;
   height: 5rem;
   padding: 2em;
   background-image: url(${props => props.imageUrl});
   background-size: cover;
-  z-index: 1000;
   overflow: visible;
+  &:hover {
+    cursor: pointer;
+    scale:1.1;
+    z-index:9999;
+  }
 `
+const CardWrapper = styled.div`
+  position: relative;
+  width: 1rem;
+  transition: width 0.5s;
+  &:hover:not(:last-child)  {
+    width: 6rem;
+  }
+`;
+
+const Hand = ({setSelectedHand}) => {
+  const [cards, setCards] = useState([{}, {}, {}, {}, {}]);
+
+  async function updateState() {
+    const state = await get("/state")
+    setCards(state.hand)
+    // Filter state get remaining cards
+  }
+
+  updateState()
 
   return (
     <Container>
       {
         cards.map(card => 
-          <Card imageUrl="https://deckofcardsapi.com/static/img/6H.png" alt="" onClick={() => {playCard(card?.id ?? 0)}} />
+          <CardWrapper>
+
+          <Card imageUrl="https://deckofcardsapi.com/static/img/6H.png" alt="" onClick={() => {setSelectedHand(card?.id ?? 0)}} />
+          </CardWrapper>
         )
       }
     </Container>
