@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Hand from "../components/hand";
 import TransportationList from "../components/transportationList/transportationList";
+import { startGame } from "../utils/api";
 
 const Wrapper = styled.div`
   position: relative;
@@ -39,8 +40,8 @@ const RightWrapper = styled.div`
 `;
 
 const IframeWrapper = styled.iframe`
-  aspect-ratio: 2.7/2;
-  height:100%;
+  height: 100%;
+  width: 100%;
 `;
 
 const listOfBusses = [
@@ -64,20 +65,35 @@ export const HomePage = (props) => {
   const [state, setState] = useState({});
 
   async function playCard(cardId) {
-    await post(`/card/${cardId}`);
+    await post(`/make-move/${cardId}`);
     await getState();
   }
+
+  // async function start() {
+  //   startGame();
+  // }
+
+  // start();
 
   return (
     <Wrapper>
       <HorizontalWrapper>
         <MainContentWrapper>
-            <IframeWrapper src={`https://kart.kolumbus.no/${selectedVehicle ? `?p=${selectedVehicle}` : ""}`} frameborder="0"></IframeWrapper>
+          <IframeWrapper
+            src={`https://kart.kolumbus.no/${
+              selectedVehicle ? `?p=${selectedVehicle}` : ""
+            }`}
+            frameborder="0"
+          ></IframeWrapper>
         </MainContentWrapper>
         <RightWrapper>
           <h3 style={{ color: "white" }}>Du er på holdeplass: Madla</h3>
-          <TransportationList options={listOfBusses} onClick={(id) => setSelectedVehicle(id)} />
+          <TransportationList
+            options={listOfBusses}
+            onClick={(id) => setSelectedVehicle(id)}
+          />
           <Hand setSelectedCard={setSelectedCard} />
+          <button disabled={!(selectedVehicle || selectedCard)}>MOVE</button>
         </RightWrapper>
       </HorizontalWrapper>
     </Wrapper>
